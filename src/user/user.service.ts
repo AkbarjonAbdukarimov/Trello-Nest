@@ -1,11 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { promisify } from 'util';
 import { scrypt as _scrypt, randomBytes } from 'crypto';
+import { plainToInstance } from 'class-transformer';
+import { UserDto } from './dto/user.dto';
 const scrypt = promisify(_scrypt);
 @Injectable()
 export class UserService {
@@ -19,12 +20,12 @@ export class UserService {
     const salt = randomBytes(8).toString('hex');
     const hash = (await scrypt(createUserDto.password, salt, 32)) as Buffer;
     user.password = `${hash.toString('hex')}.${salt}`;
-    return this.userRepository.save(user);
+    return plainToInstance(UserDto, await this.userRepository.save(user));
   }
-  async getByEmail(email: string) {
+  private async getByEmail(email: string) {
     return this.userRepository.findOneBy({ email });
   }
-  async verify(user: Partial<User>) {
+  async verify(user: { email: string; password: string }) {
     const foundUser = await this.getByEmail(user.email);
     if (!foundUser) {
       throw new BadRequestException('Invalid credentials');
@@ -32,7 +33,7 @@ export class UserService {
     const [hash, salt] = foundUser.password.split('.');
     const hashBuffer = (await scrypt(user.password, salt, 32)) as Buffer;
     if (hash === hashBuffer.toString('hex')) {
-      return foundUser;
+      return plainToInstance(UserDto, foundUser);
     }
     throw new BadRequestException('Invalid credentials');
   }
