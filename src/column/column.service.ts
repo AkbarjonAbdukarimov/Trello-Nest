@@ -38,8 +38,10 @@ export class ColumnService {
   findForUser(ownerId: number) {
     return this.repo.find({ where: { owner: { id: ownerId } } });
   }
-  findOne(id: number) {
-    return this.repo.findOne({ where: { id } });
+  async findOne(id: number) {
+    const column = await this.repo.findOne({ where: { id } });
+    if (!column) throw new NotFoundException('Column not found');
+    return column;
   }
   async update(id: number, updateColumnDto: CreateColumnDto, owner: IUser) {
     const column = await this.validateOwnership(id, owner);

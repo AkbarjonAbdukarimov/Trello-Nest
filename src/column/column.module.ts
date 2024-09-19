@@ -9,5 +9,6 @@ import { JwtModule } from '@nestjs/jwt';
   controllers: [ColumnController],
   imports: [TypeOrmModule.forFeature([Column]), JwtModule],
   providers: [ColumnService],
+  exports: [ColumnService],
 })
 export class ColumnModule {}
