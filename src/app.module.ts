@@ -5,6 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { ColumnModule } from './column/column.module';
+import { CardModule } from './card/card.module';
+import { CommentModule } from './comment/comment.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -12,6 +16,17 @@ import { AuthModule } from './auth/auth.module';
       envFilePath: ['db.env', 'secrets.env'],
       isGlobal: true,
     }),
+    JwtModule.registerAsync({
+      global: true,
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_KEY'),
+
+        signOptions: { expiresIn: configService.get<string>('JWT_EXPIRATION') },
+      }),
+    }),
+
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -28,8 +43,12 @@ import { AuthModule } from './auth/auth.module';
     }),
     UserModule,
     AuthModule,
+    ColumnModule,
+    CardModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
+  exports: [JwtModule],
 })
 export class AppModule {}
