@@ -23,7 +23,6 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@src/auth/auth.guard';
-import { Card } from './entities/card.entity';
 
 //Swagger
 @ApiTags('Card')
@@ -35,6 +34,7 @@ import { Card } from './entities/card.entity';
 //Nest
 @Controller('cards')
 @UseGuards(AuthGuard)
+//TODO: Can be added ownership check
 export class CardController {
   constructor(private readonly cardService: CardService) {}
 
