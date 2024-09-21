@@ -25,7 +25,7 @@ export class AuthService {
       email: user.email,
       password: user.password,
     });
-
+    console.log(validUser);
     return { token: this.singToken(validUser) };
   }
 }

@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -26,6 +27,7 @@ import { AuthGuard } from '@src/auth/auth.guard';
 import { User } from '@src/decorators/user.decorator';
 import { IUser } from '@src/interfaces/IUser';
 import { HTTP_CODE_METADATA } from '@nestjs/common/constants';
+import { ColumnDto } from './dtos/column.dto';
 //Nest
 @UseGuards(AuthGuard)
 @Controller('columns')
@@ -39,14 +41,22 @@ import { HTTP_CODE_METADATA } from '@nestjs/common/constants';
 export class ColumnController {
   constructor(private readonly columnService: ColumnService) {}
   @ApiOperation({ summary: "Gets User's Columns " })
-  @ApiResponse({ status: 200, description: 'Returns user Column' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns user Column',
+    type: [ColumnDto],
+  })
   @Get()
   findAll(@User() owner: IUser): Promise<Column[]> {
     return this.columnService.findForUser(owner.id);
   }
 
   @ApiOperation({ summary: 'Create a new column' })
-  @ApiResponse({ status: 201, description: 'Returns created Column' })
+  @ApiResponse({
+    status: 201,
+    description: 'Returns created Column',
+    type: ColumnDto,
+  })
   @ApiResponse({ status: 400, description: 'Validation error' })
   @Post()
   create(
@@ -58,7 +68,11 @@ export class ColumnController {
 
   @Put(':id')
   @ApiOperation({ summary: 'Updates Column by Id' })
-  @ApiResponse({ status: 201, description: 'Returns updated Column' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Returns updated Column',
+    type: ColumnDto,
+  })
   @ApiResponse({ status: 400, description: 'Validation error' })
   update(
     @User() owner: IUser,
@@ -69,7 +83,11 @@ export class ColumnController {
   }
 
   @ApiOperation({ summary: 'Deletes Column ' })
-  @ApiResponse({ status: 204, description: 'Returns deleted Column' })
+  @ApiResponse({
+    status: 204,
+    description: 'Returns deleted Column',
+    type: ColumnDto,
+  })
   @ApiNotFoundResponse({ status: 404, description: 'Column not found' })
   @Delete(':id')
   @HttpCode(204)
