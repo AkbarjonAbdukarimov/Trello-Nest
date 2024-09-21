@@ -15,10 +15,15 @@ import {
   ApiBody,
   ApiOAuth2,
   ApiOperation,
+  ApiProperty,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 class Token {
+  @ApiProperty({
+    description: 'Access token',
+    type: 'string',
+  })
   token: string;
 }
 
@@ -30,6 +35,7 @@ export class AuthController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Creates User with given credentilas and return access token',
+    type: Token,
   })
   @Post('singup')
   @HttpCode(201)
@@ -40,6 +46,7 @@ export class AuthController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Authenticate user and return token',
+    type: Token,
   })
   @Post('singin')
   async singIn(@Body() user: SignInUserDto) {
