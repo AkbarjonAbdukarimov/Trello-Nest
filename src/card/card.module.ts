@@ -11,5 +11,6 @@ import { ColumnModule } from '@src/column/column.module';
   controllers: [CardController],
   providers: [CardService],
   imports: [TypeOrmModule.forFeature([Card]), ColumnModule],
+  exports: [CardService],
 })
 export class CardModule {}

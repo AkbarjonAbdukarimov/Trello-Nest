@@ -4,6 +4,8 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToMany,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -11,13 +13,15 @@ import {
 export class Comment {
   @PrimaryGeneratedColumn()
   id: number;
+
   @Column()
   comment: string;
+
   @JoinColumn({ name: 'owner_id' })
-  @OneToOne(() => User)
+  @ManyToOne(() => User)
   owner: User;
 
   @JoinColumn({ name: 'card_id' })
-  @OneToOne(() => Card)
+  @ManyToOne(() => Card)
   card: Card;
 }
