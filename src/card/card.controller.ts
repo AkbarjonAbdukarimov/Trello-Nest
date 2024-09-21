@@ -23,6 +23,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@src/auth/auth.guard';
+import { CardDto } from './dto/card.dto';
 
 //Swagger
 @ApiTags('Card')
@@ -40,7 +41,11 @@ export class CardController {
 
   @Post(':columnId')
   @ApiOperation({ summary: 'Create a new card' })
-  @ApiResponse({ status: 201, description: 'Returns created Card' })
+  @ApiResponse({
+    status: 201,
+    description: 'Returns created Card',
+    type: CardDto,
+  })
   @ApiNotFoundResponse({ description: 'Column not found' })
   @ApiParam({ name: 'columnId', description: 'Column Id ' })
   create(
@@ -49,10 +54,12 @@ export class CardController {
   ) {
     return this.cardService.create(createCardDto, columnId);
   }
+
   @ApiOperation({ summary: 'Gets Cards for particukar Column' })
   @ApiResponse({
     status: 200,
     description: 'Retuns Cards for particukar Column',
+    type: [CardDto],
   })
   @ApiNotFoundResponse({ description: 'Column not found' })
   @ApiParam({ name: 'columnId', description: 'Column Id ' })
@@ -65,6 +72,7 @@ export class CardController {
   @ApiResponse({
     status: 200,
     description: 'Retuns Updated Card',
+    type: CardDto,
   })
   @ApiNotFoundResponse({ description: 'Card not found' })
   @ApiParam({ name: 'id', description: 'Card Id ' })
@@ -72,10 +80,12 @@ export class CardController {
   update(@Param('id') id: number, @Body() updateCardDto: CreateCardDto) {
     return this.cardService.update(id, updateCardDto);
   }
+
   @ApiOperation({ summary: 'Deletes Card and Comments of it' })
   @ApiResponse({
     status: 204,
     description: 'Retuns Deleted Card',
+    type: CardDto,
   })
   @ApiNotFoundResponse({ description: 'Card not found' })
   @ApiParam({ name: 'id', description: 'Card Id ' })

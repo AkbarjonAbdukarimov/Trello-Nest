@@ -19,6 +19,7 @@ export class CardDto extends CreateCardDto {
   @ApiProperty({
     description: 'Column',
     type: ColumnDto,
+    required: false,
   })
   column: ColumnDto;
 }
